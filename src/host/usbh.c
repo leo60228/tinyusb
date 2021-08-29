@@ -103,8 +103,9 @@ static usbh_class_driver_t const usbh_class_drivers[] =
       DRIVER_NAME("VENDOR")
       .class_code = TUSB_CLASS_VENDOR_SPECIFIC,
       .init       = cush_init,
-      .open       = cush_open_subtask,
-      .xfer_cb    = cush_isr,
+      .open       = cush_open,
+      .set_config = cush_set_config,
+      .xfer_cb    = cush_xfer_cb,
       .close      = cush_close
     }
   #endif
@@ -146,6 +147,20 @@ extern bool usbh_control_xfer_cb (uint8_t dev_addr, uint8_t ep_addr, xfer_result
 bool tuh_device_configured(uint8_t dev_addr)
 {
   return _usbh_devices[dev_addr].configured;
+}
+
+bool tuh_vid_pid_get(uint8_t dev_addr, uint16_t* vid, uint16_t* pid)
+{
+  *vid = *pid = 0;
+
+  usbh_device_t const* dev = &_usbh_devices[dev_addr];
+
+  TU_VERIFY(dev->configured);
+
+  *vid = dev->vendor_id;
+  *pid = dev->product_id;
+
+  return true;
 }
 
 tusb_speed_t tuh_device_get_speed (uint8_t const dev_addr)

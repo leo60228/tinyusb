@@ -81,6 +81,7 @@ void tuh_task(void);
 extern void hcd_int_handler(uint8_t rhport);
 #define tuh_int_handler   hcd_int_handler
 
+bool tuh_vid_pid_get(uint8_t dev_addr, uint16_t* vid, uint16_t* pid);
 tusb_speed_t tuh_device_get_speed (uint8_t dev_addr);
 
 // Check if device is configured
